@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Mist Family Cookbook</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Lora:ital,wght@0,400;0,500;1,400&family=Jost:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy: #0f1f2e;
+  --slate: #1e3448;
+  --steel: #2d5070;
+  --mist: #5b8faa;
+  --sky: #8bbdd4;
+  --powder: #b8d8e8;
+  --fog: #daeaf4;
+  --ice: #f2f8fc;
+  --pale: #e4f0f7;
+  --ink: #141c24;
+  --mid: #2a3c4e;
+  --soft: #4a6478;
+  --ghost: #7a98aa;
+  --silver: #b0ccd8;
+  --rule: #d0e0ea;
+  --white: #ffffff;
+  --sidebar-w: 260px;
+  --header-h: 56px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{height:100%;font-family:'Jost',sans-serif;background:var(--ice);color:var(--ink);}
+
+/* ── LAYOUT ── */
+.app{display:flex;height:100vh;overflow:hidden;}
+
+/* ── SIDEBAR ── */
+.sidebar{
+  width:var(--sidebar-w);flex-shrink:0;
+  background:var(--navy);
+  display:flex;flex-direction:column;
+  overflow:hidden;
+  transition:transform 0.28s cubic-bezier(.4,0,.2,1);
+  z-index:10;
+}
+.sidebar-head{
+  padding:18px 16px 14px;
+  border-bottom:1px solid rgba(255,255,255,0.07);
+}
+.sidebar-logo{
+  font-family:'Playfair Display',serif;
+  font-style:italic;
+  font-size:18px;
+  color:var(--white);
+  line-height:1.2;
+  margin-bottom:2px;
+}
+.sidebar-logo span{color:var(--sky);}
+.sidebar-sub{
+  font-size:10px;font-weight:300;
+  letter-spacing:0.12em;text-transform:uppercase;
+  color:var(--ghost);
+}
+.sidebar-search{
+  padding:10px 12px;
+  border-bottom:1px solid rgba(255,255,255,0.06);
+}
+.sidebar-search input{
+  width:100%;background:rgba(255,255,255,0.07);
+  border:none;border-radius:6px;
+  padding:7px 10px;
+  font-family:'Jost',sans-serif;font-size:12px;font-weight:300;
+  color:var(--white);outline:none;
+}
+.sidebar-search input::placeholder{color:var(--ghost);}
+.sidebar-search input:focus{background:rgba(255,255,255,0.12);}
+.sidebar-nav{flex:1;overflow-y:auto;padding:8px 0;}
+.sidebar-nav::-webkit-scrollbar{width:3px;}
+.sidebar-nav::-webkit-scrollbar-track{background:transparent;}
+.sidebar-nav::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.12);border-radius:2px;}
+.cat-group{margin-bottom:2px;}
+.cat-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:7px 14px;cursor:pointer;
+  font-size:10px;font-weight:500;letter-spacing:0.15em;text-transform:uppercase;
+  color:var(--powder);
+  transition:background 0.15s;
+}
+.cat-header:hover{background:rgba(255,255,255,0.05);}
+.cat-count{
+  font-size:9px;font-weight:400;
+  background:rgba(255,255,255,0.1);
+  color:var(--ghost);
+  padding:1px 6px;border-radius:10px;
+  letter-spacing:0;text-transform:none;
+}
+.cat-items{padding:2px 0 4px;}
+.nav-item{
+  display:block;padding:5px 14px 5px 22px;
+  font-size:12px;font-weight:300;
+  color:rgba(255,255,255,0.6);
+  cursor:pointer;
+  border-left:2px solid transparent;
+  transition:all 0.15s;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.nav-item:hover{color:var(--white);background:rgba(255,255,255,0.04);}
+.nav-item.active{
+  color:var(--sky);
+  border-left-color:var(--sky);
+  background:rgba(91,143,170,0.12);
+  font-weight:400;
+}
+.sidebar-footer{
+  padding:12px 14px;
+  border-top:1px solid rgba(255,255,255,0.07);
+}
+.add-btn{
+  display:flex;align-items:center;gap:8px;
+  width:100%;padding:9px 12px;
+  background:var(--mist);
+  border:none;border-radius:8px;
+  font-family:'Jost',sans-serif;font-size:12px;font-weight:500;
+  color:var(--white);cursor:pointer;
+  transition:background 0.18s;
+}
+.add-btn:hover{background:var(--steel);}
+.add-btn svg{flex-shrink:0;}
+
+/* ── MAIN ── */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+
+/* Top bar */
+.topbar{
+  height:var(--header-h);flex-shrink:0;
+  background:var(--white);
+  border-bottom:1px solid var(--rule);
+  display:flex;align-items:center;
+  padding:0 24px;gap:16px;
+}
+.topbar-title{
+  font-family:'Playfair Display',serif;
+  font-size:17px;font-style:italic;
+  color:var(--navy);flex:1;
+}
+.topbar-meta{
+  display:flex;gap:6px;
+  font-size:11px;font-weight:300;color:var(--ghost);
+}
+.meta-chip{
+  background:var(--ice);border:1px solid var(--rule);
+  border-radius:20px;padding:3px 9px;
+  color:var(--soft);
+}
+.topbar-actions{display:flex;gap:6px;}
+.icon-btn{
+  width:32px;height:32px;
+  display:flex;align-items:center;justify-content:center;
+  border:1px solid var(--rule);border-radius:7px;
+  background:transparent;cursor:pointer;
+  color:var(--soft);
+  transition:all 0.15s;
+}
+.icon-btn:hover{background:var(--ice);color:var(--navy);}
+.icon-btn.danger:hover{background:#fef2f2;border-color:#fca5a5;color:#dc2626;}
+
+/* Content area */
+.content{flex:1;overflow-y:auto;padding:28px 28px 48px;}
+.content::-webkit-scrollbar{width:5px;}
+.content::-webkit-scrollbar-track{background:transparent;}
+.content::-webkit-scrollbar-thumb{background:var(--silver);border-radius:3px;}
+
+/* ── RECIPE VIEW ── */
+.recipe-view{}
+.recipe-hero{
+  margin-bottom:24px;
+  padding-bottom:20px;
+  border-bottom:1px solid var(--rule);
+}
+.recipe-category{
+  font-size:10px;font-weight:500;
+  letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--mist);margin-bottom:6px;
+}
+.recipe-title{
+  font-family:'Playfair Display',serif;
+  font-size:28px;font-weight:600;
+  color:var(--navy);line-height:1.2;
+  margin-bottom:6px;
+}
+.recipe-attribution{
+  font-family:'Lora',serif;font-style:italic;
+  font-size:13px;color:var(--ghost);
+  margin-bottom:14px;
+}
+.recipe-meta{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;}
+.recipe-meta-chip{
+  display:flex;align-items:center;gap:5px;
+  background:var(--pale);
+  border:1px solid var(--fog);
+  border-radius:20px;padding:4px 11px;
+  font-size:11px;font-weight:400;color:var(--mid);
+}
+.recipe-tags{display:flex;flex-wrap:wrap;gap:5px;}
+.tag{
+  font-size:10px;font-weight:400;letter-spacing:0.06em;
+  background:var(--fog);color:var(--steel);
+  border-radius:4px;padding:3px 8px;
+}
+
+/* Two-col body */
+.recipe-body{
+  display:grid;
+  grid-template-columns:1fr 1.6fr;
+  gap:28px;
+  align-items:start;
+}
+@media(max-width:640px){.recipe-body{grid-template-columns:1fr;}}
+
+.section-label{
+  font-size:9px;font-weight:600;
+  letter-spacing:0.22em;text-transform:uppercase;
+  color:var(--mist);margin-bottom:10px;
+  display:flex;align-items:center;gap:8px;
+}
+.section-label::after{content:'';flex:1;height:1px;background:var(--rule);}
+
+.ing-list{list-style:none;}
+.ing-list li{
+  display:flex;align-items:flex-start;gap:7px;
+  font-family:'Lora',serif;font-size:13px;
+  color:var(--mid);line-height:1.5;
+  padding:3px 0;
+  border-bottom:1px solid var(--rule);
+}
+.ing-list li:last-child{border-bottom:none;}
+.ing-bullet{
+  width:5px;height:5px;flex-shrink:0;
+  background:var(--mist);
+  border-radius:50%;margin-top:6px;
+}
+.directions-text{
+  font-family:'Lora',serif;font-style:italic;
+  font-size:14px;line-height:1.85;
+  color:var(--ink);
+}
+
+/* ── WELCOME ── */
+.welcome{
+  max-width:520px;margin:40px auto 0;
+  text-align:center;
+}
+.welcome-icon{
+  width:80px;height:80px;margin:0 auto 20px;
+  background:var(--pale);border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+}
+.welcome h2{
+  font-family:'Playfair Display',serif;font-style:italic;
+  font-size:22px;color:var(--navy);margin-bottom:8px;
+}
+.welcome p{font-size:13px;font-weight:300;color:var(--soft);line-height:1.7;}
+.stats{
+  display:flex;gap:12px;justify-content:center;margin-top:24px;
+}
+.stat-card{
+  background:var(--white);border:1px solid var(--rule);
+  border-radius:10px;padding:12px 20px;text-align:center;
+}
+.stat-num{font-size:24px;font-weight:500;color:var(--navy);}
+.stat-lbl{font-size:10px;font-weight:300;color:var(--ghost);margin-top:2px;text-transform:uppercase;letter-spacing:0.1em;}
+
+/* ── CATEGORY PAGE ── */
+.cat-page-header{margin-bottom:24px;}
+.cat-page-title{
+  font-family:'Playfair Display',serif;font-style:italic;
+  font-size:26px;color:var(--navy);margin-bottom:4px;
+}
+.cat-page-count{font-size:12px;font-weight:300;color:var(--ghost);}
+.recipe-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+  gap:14px;
+}
+.recipe-card{
+  background:var(--white);
+  border:1px solid var(--rule);
+  border-radius:10px;
+  padding:16px;cursor:pointer;
+  transition:all 0.18s;
+  border-top:3px solid var(--mist);
+}
+.recipe-card:hover{
+  border-color:var(--silver);
+  transform:translateY(-2px);
+  box-shadow:0 6px 20px rgba(15,31,46,0.08);
+}
+.card-cat{font-size:9px;font-weight:500;letter-spacing:0.16em;text-transform:uppercase;color:var(--sky);margin-bottom:6px;}
+.card-title{font-family:'Playfair Display',serif;font-size:15px;color:var(--navy);margin-bottom:4px;line-height:1.3;}
+.card-attr{font-size:11px;font-weight:300;color:var(--ghost);font-style:italic;margin-bottom:8px;}
+.card-meta{display:flex;flex-wrap:wrap;gap:4px;}
+.card-tag{font-size:9px;background:var(--ice);border:1px solid var(--rule);border-radius:3px;padding:2px 6px;color:var(--soft);}
+
+/* ── MODAL / FORM ── */
+.modal-overlay{
+  display:none;
+  position:absolute;inset:0;
+  background:rgba(15,31,46,0.5);
+  z-index:100;
+  align-items:flex-start;justify-content:center;
+  padding:40px 20px;
+  overflow-y:auto;
+}
+.modal-overlay.open{display:flex;}
+.modal{
+  background:var(--white);
+  border-radius:14px;
+  width:100%;max-width:680px;
+  overflow:hidden;
+  box-shadow:0 24px 60px rgba(15,31,46,0.2);
+}
+.modal-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:18px 22px;
+  border-bottom:1px solid var(--rule);
+  background:var(--navy);
+}
+.modal-title{
+  font-family:'Playfair Display',serif;font-style:italic;
+  font-size:18px;color:var(--white);
+}
+.modal-close{
+  width:28px;height:28px;
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(255,255,255,0.1);border:none;border-radius:6px;
+  color:var(--white);cursor:pointer;font-size:16px;
+}
+.modal-close:hover{background:rgba(255,255,255,0.2);}
+.modal-body{padding:22px;}
+
+/* Form */
+.form-row{margin-bottom:16px;}
+.form-row label{
+  display:block;font-size:11px;font-weight:500;
+  letter-spacing:0.1em;text-transform:uppercase;
+  color:var(--soft);margin-bottom:6px;
+}
+.form-row input,.form-row select,.form-row textarea{
+  width:100%;
+  background:var(--ice);
+  border:1px solid var(--rule);
+  border-radius:7px;
+  padding:9px 12px;
+  font-family:'Jost',sans-serif;font-size:13px;font-weight:300;
+  color:var(--ink);outline:none;
+  transition:border 0.15s;
+}
+.form-row input:focus,.form-row select:focus,.form-row textarea:focus{
+  border-color:var(--mist);
+  background:var(--white);
+}
+.form-row textarea{resize:vertical;min-height:90px;line-height:1.6;}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+@media(max-width:540px){.form-grid{grid-template-columns:1fr;}}
+
+/* Dynamic list editor */
+.dyn-list{display:flex;flex-direction:column;gap:6px;}
+.dyn-item{display:flex;gap:6px;align-items:center;}
+.dyn-item input{flex:1;}
+.dyn-remove{
+  width:28px;height:28px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  background:transparent;border:1px solid var(--rule);
+  border-radius:6px;cursor:pointer;color:var(--ghost);font-size:14px;
+  transition:all 0.15s;
+}
+.dyn-remove:hover{background:#fef2f2;border-color:#fca5a5;color:#dc2626;}
+.dyn-add{
+  margin-top:6px;
+  background:transparent;border:1px dashed var(--silver);
+  border-radius:7px;padding:7px 12px;
+  font-family:'Jost',sans-serif;font-size:12px;font-weight:400;
+  color:var(--mist);cursor:pointer;width:100%;
+  transition:all 0.15s;
+}
+.dyn-add:hover{border-color:var(--mist);background:var(--pale);}
+
+/* Modal footer */
+.modal-footer{
+  display:flex;justify-content:flex-end;gap:8px;
+  padding:16px 22px;
+  border-top:1px solid var(--rule);
+}
+.btn-cancel{
+  padding:9px 18px;background:transparent;
+  border:1px solid var(--rule);border-radius:8px;
+  font-family:'Jost',sans-serif;font-size:13px;font-weight:400;
+  color:var(--soft);cursor:pointer;
+  transition:all 0.15s;
+}
+.btn-cancel:hover{background:var(--ice);}
+.btn-save{
+  padding:9px 22px;background:var(--mist);
+  border:none;border-radius:8px;
+  font-family:'Jost',sans-serif;font-size:13px;font-weight:500;
+  color:var(--white);cursor:pointer;
+  transition:background 0.18s;
+}
+.btn-save:hover{background:var(--slate);}
+
+/* ── SEARCH RESULTS ── */
+.search-results{display:flex;flex-direction:column;gap:8px;}
+.search-result{
+  display:flex;align-items:center;gap:12px;
+  background:var(--white);border:1px solid var(--rule);
+  border-radius:8px;padding:12px 14px;cursor:pointer;
+  transition:all 0.15s;
+}
+.search-result:hover{border-color:var(--silver);background:var(--pale);}
+.sr-cat{
+  font-size:9px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;
+  color:var(--mist);white-space:nowrap;
+}
+.sr-title{font-family:'Playfair Display',serif;font-size:14px;color:var(--navy);}
+.sr-attr{font-size:11px;font-weight:300;color:var(--ghost);font-style:italic;}
+
+/* Notification toast */
+.toast{
+  display:none;
+  position:absolute;bottom:24px;right:24px;
+  background:var(--navy);color:var(--white);
+  padding:10px 18px;border-radius:8px;
+  font-size:12px;font-weight:400;
+  z-index:200;
+  animation:toastIn 0.25s ease;
+}
+.toast.show{display:block;}
+@keyframes toastIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+
+/* ── MOBILE ── */
+.hamburger{
+  display:none;width:36px;height:36px;
+  background:transparent;border:1px solid var(--rule);
+  border-radius:7px;align-items:center;justify-content:center;
+  cursor:pointer;color:var(--soft);
+}
+@media(max-width:768px){
+  .sidebar{
+    position:absolute;left:0;top:0;bottom:0;
+    transform:translateX(-100%);
+  }
+  .sidebar.open{transform:translateX(0);}
+  .hamburger{display:flex;}
+  .content{padding:16px 16px 40px;}
+}
+
+.empty-state{
+  text-align:center;padding:48px 20px;
+  font-size:13px;font-weight:300;color:var(--ghost);
+}
+</style>
+</head>
+<body>
+
+<div class="app" id="app">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-head">
+      <div class="sidebar-logo">The <span>Mist</span> Family</div>
+      <div class="sidebar-sub">Cookbook</div>
+    </div>
+    <div class="sidebar-search">
+      <input type="text" id="searchInput" placeholder="Search recipes..." autocomplete="off">
+    </div>
+    <nav class="sidebar-nav" id="sidebarNav"></nav>
+    <div class="sidebar-footer">
+      <button class="add-btn" id="addBtn">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><line x1="7" y1="1" x2="7" y2="13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><line x1="1" y1="7" x2="13" y2="7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        Add new recipe
+      </button>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+    <header class="topbar">
+      <button class="hamburger" id="hamburger">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><line x1="2" y1="4" x2="14" y2="4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><line x1="2" y1="8" x2="14" y2="8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><line x1="2" y1="12" x2="14" y2="12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </button>
+      <div class="topbar-title" id="topbarTitle">The Mist Family Cookbook</div>
+      <div class="topbar-meta" id="topbarMeta"></div>
+      <div class="topbar-actions" id="topbarActions"></div>
+    </header>
+    <div class="content" id="content"></div>
+  </div>
+
+  <!-- MODAL -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-title" id="modalTitle">Add recipe</div>
+        <button class="modal-close" id="modalClose">✕</button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="editId">
+        <div class="form-row">
+          <label>Recipe title</label>
+          <input type="text" id="fTitle" placeholder="e.g. Grandma's Apple Pie">
+        </div>
+        <div class="form-grid">
+          <div class="form-row">
+            <label>Category</label>
+            <select id="fCategory"></select>
+          </div>
+          <div class="form-row">
+            <label>Attribution (optional)</label>
+            <input type="text" id="fAttribution" placeholder="e.g. Aunt Jane">
+          </div>
+        </div>
+        <div class="form-grid">
+          <div class="form-row">
+            <label>Serves</label>
+            <input type="text" id="fServes" placeholder="e.g. Serves 6">
+          </div>
+          <div class="form-row">
+            <label>Time</label>
+            <input type="text" id="fTime" placeholder="e.g. 45 Min">
+          </div>
+          <div class="form-row">
+            <label>Temperature / method</label>
+            <input type="text" id="fTemp" placeholder="e.g. 350°F or Stovetop">
+          </div>
+        </div>
+        <div class="form-row">
+          <label>Tags (comma-separated)</label>
+          <input type="text" id="fTags" placeholder="e.g. Chicken, Baked, Quick">
+        </div>
+        <div class="form-row">
+          <label>Ingredients</label>
+          <div class="dyn-list" id="ingList"></div>
+          <button class="dyn-add" id="ingAdd">+ Add ingredient</button>
+        </div>
+        <div class="form-row">
+          <label>Directions</label>
+          <textarea id="fDirections" rows="6" placeholder="Enter the full recipe instructions..."></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-cancel" id="btnCancel">Cancel</button>
+        <button class="btn-save" id="btnSave">Save recipe</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST -->
+  <div class="toast" id="toast"></div>
+</div>
+
+<script>
+const CAT_ORDER = [
+  'Main Dishes','Soups & Stews','Salads & Sides','Appetizers & Dips',
+  'Cakes','Cookies & Bars','Candy & Sweets','Pies & Desserts',
+  'Breads & Baked','Beverages'
+];
+
+const INITIAL_RECIPES = [
+  {id:'r1',title:'Jambalaya',attribution:'Mike Hemann',category:'Main Dishes',tags:['Cajun','One-Pot','Chicken'],meta:['Serves 8-10','~3 Hours','Stovetop'],ingredients:['2 lbs chicken breasts, cubed','1-1/2 lbs smoked sausage, sliced','2 green bell peppers, chopped','2 red bell peppers, chopped','1 yellow bell pepper, chopped','2 large onions, chopped','2 bunches green onions, sliced','3 tomatoes, chopped','2 tablespoons garlic','1 can chicken broth','2 cans Cajun stewed tomatoes','1/2 can beer','1/2 cup wine','Worcestershire, black pepper & cayenne to taste'],instructions:'Rinse chicken and cut in chunks. Slice sausage and chop vegetables. Take a swig of beer! Saute chicken in 2 tbls butter with 1 tbls garlic. Add wine, cayenne pepper, Worcestershire sauce, and liquid smoke if needed. Brown chicken then remove. Add vegetables with 2 tablespoons butter and saute a couple minutes. Add tomatoes squeezed through hands (drain juice off one can). Add chicken broth and 1/2 can beer. Sprinkle in a healthy layer of black pepper, more Worcestershire and cayenne. Add rest of garlic and bring to a good boil for a few minutes, then reduce heat and simmer about 1/2 hour. Add chicken, sausage and 2 tablespoons sugar, then simmer for about 2 more hours. Serve over hot rice.'},
+  {id:'r2',title:'Chicken Cacciatore',attribution:'Genia Middlemist',category:'Main Dishes',tags:['Chicken','Italian','Baked'],meta:['Serves 4','60 Min','350°F'],ingredients:['4 boneless skinless chicken breasts, rinsed','1/3 cup olive oil','1/2-3/4 tsp garlic salt to taste','1 tsp oregano, rubbed between palms','Pepper to taste','1 large can tomato sauce','1 small can tomato paste'],instructions:'Place chicken in a baking dish. Pour 1/3 cup olive oil over chicken. Sprinkle with garlic salt, oregano and pepper to taste. Mix tomato sauce and paste together and pour over top. Sprinkle a little more oregano and garlic over sauce. Bake at 350 degrees for 45-60 minutes with a lid on, removing lid for last 10 minutes. Can also be cooked in microwave 15-20 minutes on high, covered. Serve over cooked egg noodles or pasta of choice.'},
+  {id:'r3',title:'Chicken Divan',attribution:'Genia Middlemist',category:'Main Dishes',tags:['Chicken','Casserole','Broccoli'],meta:['Serves 6','40 Min','350°F'],ingredients:['4 boneless chicken breasts, cooked & cubed','2 pkgs (10 oz) broccoli, lightly cooked','1 can cream of chicken soup','1 can cream of celery soup','1 cup Miracle Whip or mayonnaise','1/2 cup cream','1/4 cup butter and 1/4 cup flour','3 tbls cooking sherry (optional)','1 tbls lemon juice and 1 tbls chicken stock','About 1 cup bread crumbs browned in butter','1/2 cup or more grated cheddar cheese'],instructions:'Melt butter in sauce pan, add flour and stir until mixed. Over low heat, add soups, mayonnaise and cream. Mix well. Add sherry, lemon juice and seasonings. Place cooked broccoli in buttered baking pan. Cover with half of sauce, then cover with chicken pieces. Add a little Parmesan and pour remaining sauce over. Sprinkle bread crumbs and cheese over top and bake at 350 degrees for 30-35 minutes.'},
+  {id:'r4',title:'Chicken & Noodles',attribution:'Genia Middlemist',category:'Main Dishes',tags:['Homemade Noodles','Chicken','Comfort'],meta:['Serves 6','2+ Hours','Stovetop'],ingredients:['3 eggs','About 6 half eggshells of water','1/2 tsp salt','Flour until stiff dough','Boneless chicken breasts','1-2 tablespoons butter','2-3 tablespoons chicken base','Salt and pepper to taste'],instructions:'Break 3 eggs into a medium bowl. Add 6 half eggshells of water and 1/2 tsp salt. Beat until frothy. Add flour until stiff dough forms. Roll out on floured board to about 1/4 inch thick. Let dry 45 min to 1 hour. Sprinkle flour on top, roll lengthwise, cut with sharp knife at a slant. Separate and mix in with flour. Cook chicken until done, cool and cut into chunks. Put chicken back into broth, add butter and chicken base. Bring to a good boil, add noodles stirring to mix flour well. Cook over medium to low heat until noodles are tender. Season to taste.'},
+  {id:'r5',title:'Steak Teriyaki',attribution:'Family Favorite',category:'Main Dishes',tags:['Beef','Grill','Marinade'],meta:['Serves 4','24 Hr Marinate','Grill or Broil'],ingredients:['2-inch sirloin steak','3/4 cup soy sauce','1/2 cup brown sugar','1 tsp ground ginger','1-1/2 cups sherry','1-1/2 cups water','3 garlic cloves, crushed'],instructions:'Combine all marinade ingredients and mix well. Place steak in a glass pan and pour marinade over it. Marinate steak 24 hours, turning occasionally to ensure even coverage. Grill or broil to desired doneness. The marinade caramelizes beautifully on the grill.'},
+  {id:'r6',title:'Steak Au Pavior',attribution:'Scott M. — Bon Appetit',category:'Main Dishes',tags:['Beef','Elegant','Pan Sauce'],meta:['Serves 4','1 Hr 20 Min','Stovetop'],ingredients:['Steaks of choice — NY strip, sirloin, etc.','Cracked pepper','1/4 cup butter','1 tablespoon olive oil','1/2 cup cognac','1/2 cup beef stock','2 tablespoons Dijon mustard','1 cup heavy cream'],instructions:'Cover steaks with cracked pepper, cover and let stand 1 hour. Brown in butter and olive oil on high heat. Pour off excess fat, add cognac and deglaze pan. Add beef stock, Dijon mustard and heavy cream. Simmer till reduced by half and very thick. Pour sauce over steaks and serve.'},
+  {id:'r7',title:"John Wayne's Cheese Casserole",attribution:'Celebrity Classic',category:'Main Dishes',tags:['Cheese','Green Chile','Egg Bake'],meta:['Serves 8','1 Hour','325°F'],ingredients:['2 cans green chiles, drained & chopped','1 lb Monterey Jack cheese, grated','1 lb Cheddar cheese, grated coarsely','4 egg whites','4 egg yolks','2/3 cup evaporated milk','1 tablespoon flour','1/2 tsp salt and 1/8 tsp pepper','2 medium tomatoes, sliced'],instructions:"Preheat oven to 325 degrees. Combine chiles and cheese in a well-buttered shallow casserole (2 qt). Beat egg whites at high speed until stiff. Beat egg yolks with milk, flour, salt and pepper. Fold yolk mixture into whites. Pour over chile-cheese mixture. Arrange tomato slices on top. Bake until set, about 1 hour."},
+  {id:'r8',title:'Ham Loaf',attribution:'Sunday Supper',category:'Main Dishes',tags:['Ham','Meatloaf','Baked'],meta:['Serves 6','45 Min','350°F'],ingredients:['3-4 lbs ground ham, can add ground pork','1 beaten egg','2-3 tablespoons sour cream','Chopped onion, about 1/2 medium size','3/4 tsp dry mustard','Black pepper to taste','About 1/2 cup cracker crumbs'],instructions:'Mix together all ingredients. Put in greased baking dish and form into loaf. Leave about 1/2 inch space between loaf and sides of pan. Bake 35-45 minutes at 350 degrees.'},
+  {id:'r9',title:'Barbecued Pork',attribution:'Simple & Sweet',category:'Main Dishes',tags:['Pork','BBQ','Easy'],meta:['Serves 4-6','60 Min','350°F'],ingredients:['Spare ribs or pork chops, boneless preferred','About 1 cup ketchup','1/3 cup brown sugar','Optional: liquid smoke or chile powder'],instructions:'Put pork in a baking dish and cook at 350 degrees for about 45 minutes until done and lightly browned. Mix ketchup and brown sugar together and spoon over meat. Bake about 15 minutes more. Can add a little liquid smoke or chile powder if desired.'},
+  {id:'r10',title:'Quiche',attribution:'Versatile Classic',category:'Main Dishes',tags:['Egg','Cheese','Brunch'],meta:['Serves 6','45 Min','400° then 350°F'],ingredients:['Unbaked pie shell','5 eggs, beaten','1 cup half and half','Dash of nutmeg','Salt and pepper to taste','1-1/2 or more cups shredded Swiss cheese','Fillings: ham, onions, bacon, or green chile'],instructions:'Layer fillings of choice in the bottom of the crust with half the cheese. Mix eggs, half and half, nutmeg, salt and pepper together. Pour in the egg mixture. Add rest of cheese on top. Bake 15 minutes at 400 degrees, then lower temperature to 350 degrees and bake 25-30 minutes longer until set.'},
+  {id:'r11',title:'Spezzateddu',attribution:'Sicilian Beef Stew',category:'Soups & Stews',tags:['Italian','Beef','Red Wine'],meta:['Serves 6-8','1.5 Hours','Stovetop'],ingredients:['2-1/2 lbs beef chuck, cut in 2-inch cubes','3/4 cup flour','1/3 cup vegetable oil','1/3 cup olive oil','2 medium yellow onions, diced','1 large red bell pepper, strips','1 large yellow bell pepper, strips','2 tsp chopped fresh rosemary','4 cloves garlic, minced','2 tablespoons tomato paste','3 medium Yukon gold potatoes, diced','2 cups Chianti or red wine','2 cups beef stock','1 cup fresh Italian parsley, chopped'],instructions:'Heat vegetable oil on high in a large stew pot. Season beef with salt and pepper, dredge in flour and brown in two batches. Remove and drain. Add olive oil and saute onions until slightly soft, about 3 minutes. Add peppers, rosemary and garlic and cook another 3 minutes. Add meat, tomato paste and potatoes. Stir to coat. Add red wine and reduce by 1/3. Add beef stock, bring to a boil 3 minutes, then turn heat to low and simmer 1 hour until fork tender. Stir in fresh parsley. Season with salt and pepper to taste.'},
+  {id:'r12',title:'Chile Soup',attribution:'Southwest Style',category:'Soups & Stews',tags:['Chili','Ground Beef','Spicy'],meta:['Serves 8','45 Min','Stovetop'],ingredients:['2 lbs ground beef','1/4 cup olive oil','1-1/2 large onions, chopped','1 tablespoon minced garlic','1 bell pepper, chopped','1 can diced green chiles','1/2 tsp oregano and 1/2 bay leaf','1/4 tsp cayenne and 1/2 tsp black pepper','1 tsp paprika, salt to taste','2 tablespoons chile powder','1/3 cup flour','1 can tomato sauce and 1 can diced tomatoes','1 large can hot chile beans','3 tsp sugar, 1/2 can beer or wine'],instructions:'Brown ground beef in olive oil. Add onion, garlic and bell pepper, cook five minutes. Add chiles and all seasonings. Mix well, stir in flour, mix well again. Add tomato sauce, diced tomatoes and 1/2 can water. Add chile beans. Add sugar and a little beer or wine. Simmer about 20 minutes, adjusting liquid as needed.'},
+  {id:'r13',title:'Potato Soup',attribution:'Hearty & Simple',category:'Soups & Stews',tags:['Potato','Bacon','Comfort'],meta:['Serves 6','1 Hour','Stovetop'],ingredients:['6 medium potatoes, peeled and cubed','1 large onion, chopped','1/2 cup thinly sliced celery','1 cup shredded carrots','3 cups water','2 tsp salt and 1/4 tsp pepper','1 can chicken broth','1 can evaporated milk','3-4 slices bacon'],instructions:'Cook potatoes, onion, celery and carrots in water with salt and pepper until vegetables are tender. Add chicken broth and evaporated milk. Brown bacon till crisp, drain well, crumble and add to soup. Simmer a couple of hours for best flavor.'},
+  {id:'r14',title:'Green Chile Sauce',attribution:'New Mexico Style',category:'Soups & Stews',tags:['New Mexico','Pork','Green Chile'],meta:['Serves 6','30+ Min','Stovetop'],ingredients:['Chunks of boneless pork','1 tablespoon olive oil','Minced garlic to taste','Minced onion to taste','About 1 tablespoon flour','About 3/4 to 1 cup water','1 can chopped green chile','1 can Rotelle tomatoes with green chile','Powdered red chile and green chile to taste'],instructions:'Brown chunks of boneless pork in olive oil. Add minced garlic and onion to taste. Cook about 1-2 minutes, add flour, stir, then add water. Bring to a boil then lower heat. Add green chile and Rotelle tomatoes with green chile. Season with powdered chiles to taste. Simmer till hungry!'},
+  {id:'r15',title:'Chicken Salad',attribution:'Ramen Crunch Version',category:'Salads & Sides',tags:['Chicken','Ramen','Asian'],meta:['Serves 6','20 Min','No Cook'],ingredients:['2 large chicken breasts, cooked','Lettuce','3 green onions','3/4 cup nuts (peanuts)','2 pkgs ramen noodles, broken uncooked','3 tablespoons sesame seeds','Dressing: 1/2 cup oil, 2 tablespoons vinegar','2 tablespoons sugar (brown and white mix)','2 tablespoons soy sauce, 2 pkgs ramen seasoning'],instructions:'Combine lettuce, shredded cooked chicken, green onions, broken uncooked ramen noodles, nuts and sesame seeds in a large bowl. For dressing, whisk together oil, vinegar, sugar, soy sauce and the ramen seasoning packets. Toss just before serving.'},
+  {id:'r16',title:'Cornbread Stuffing',attribution:'Holiday Classic',category:'Salads & Sides',tags:['Stuffing','Cornbread','Thanksgiving'],meta:['Serves 12','45 Min','350°F'],ingredients:['2 loaves bread, dried & broken into pieces','2 boxes Jiffy cornbread, baked & crumbled','1/3 cup sugar','2 tsp crushed sage leaves to taste','Salt and pepper to taste','3 large stalks celery, chopped','1 large onion, chopped','1/2 lb bacon, cut in small pieces','1-2 cans chicken or vegetable broth','1/2-3/4 cup chopped pecans (optional)'],instructions:'Cook bacon till done but not crisp. Add celery and onion, saute until vegetables are tender and transparent. Add 1-2 cans of broth depending on how much liquid you need. Simmer about 5 minutes, then pour over bread mixture. Add pecans if desired. Place in greased baking dish. Cover and bake about 35 minutes at 350 degrees.'},
+  {id:'r17',title:'Fruit Salad',attribution:'Sour Cream Version',category:'Salads & Sides',tags:['Fruit','No-Cook','Potluck'],meta:['Serves 8','10 Min + Chill','No Cook'],ingredients:['1 can pineapple chunks, well drained','1 can mandarin oranges, well drained','1 jar maraschino cherries, drained','1/2 cup chopped nuts','1 cup miniature marshmallows','1 small carton of sour cream'],instructions:'Gently fold sour cream and marshmallows into fruit and nuts. Chill and serve.'},
+  {id:'r18',title:'Mandarin Green Beans',attribution:'Mary Zinn',category:'Salads & Sides',tags:['Green Beans','Asian','Almonds'],meta:['Serves 4','15 Min','Stovetop'],ingredients:['1 can green beans (save and use liquid)','2 tablespoons blanched almond halves','1 tablespoon cooking oil','1/2 cup coarsely chopped celery','2 tsp chicken stock base, bottled','1 tsp soy sauce, 1 tsp sugar, 1 tsp white vinegar','2 tsp cornstarch mixed with 1 tablespoon water'],instructions:'Lightly brown almonds in oil, then add celery and saute 2 minutes. Add 1/2 cup bean liquid, the stock base, soy sauce, sugar and vinegar. Cover and simmer 3 minutes. Stir in beans and heat till hot. Add cornstarch mixture and heat just till sauce thickens.'},
+  {id:'r19',title:'Spicy Cocktail Meatballs',attribution:'Party Favorite',category:'Appetizers & Dips',tags:['Meatballs','Party','Crockpot'],meta:['Makes ~60','40 Min','350°F'],ingredients:['2 lbs ground round','3/4 cup cracker crumbs','1/3 cup parsley flakes','2 eggs beaten','2 tablespoons soy sauce','1/4 tsp pepper and 1/2 tsp garlic powder','1/3 cup catsup, 2 tablespoons instant minced onion','Sauce: 1 lb jellied cranberry sauce','1 bottle (12oz) chile sauce','1 tablespoon lemon juice, 2 tablespoons brown sugar'],instructions:'Combine cranberry sauce, chile sauce, brown sugar and lemon juice in a sauce pan. Cook over moderate heat, stirring occasionally until smooth. Mix all other ingredients in a large bowl and blend well. Form into walnut-sized balls and arrange in a large baking pan. Pour sauce over meatballs and bake uncovered at 350 degrees about 30 minutes. Transfer to a crockpot to keep warm. Makes about 60 meatballs.'},
+  {id:'r20',title:'Cheese Ball',attribution:'Marilean Kelly',category:'Appetizers & Dips',tags:['Cheese','Bleu Cheese','Party'],meta:['Serves 10-12','15 Min + Chill','No Cook'],ingredients:['1/4 cup butter or margarine','8 oz cream cheese','4 oz bleu cheese','Small can ripe chopped olives','1 tablespoon freeze dried chives','Chopped nuts for rolling'],instructions:'Mix together until well combined. Shape into a ball, then roll in chopped nuts. Wrap and chill. Serve with crackers.'},
+  {id:'r21',title:'Vegetable Dip',attribution:'Fresh & Herbed',category:'Appetizers & Dips',tags:['Dip','Sour Cream','Herbs'],meta:['Serves 8-10','5 Min + Chill','No Cook'],ingredients:['1 pint sour cream','1 pint mayonnaise','2 tablespoons dill weed','2 teaspoons Beaumonde','Parsley, minced onion and garlic to taste'],instructions:'Mix well and refrigerate. Needs to sit awhile for flavors to meld. Serve with fresh veggies.'},
+  {id:'r22',title:'Cream Cheese Dip',attribution:'La Jara Highway Tavern',category:'Appetizers & Dips',tags:['Cream Cheese','Dip','Party'],meta:['Serves 8','5 Min + Chill','No Cook'],ingredients:['1 pkg (8oz) cream cheese','1/2 cup mayonnaise','1/3 cup canned milk','1/2 tsp onion powder','1/8 tsp garlic powder to taste','1-1/2 tablespoons A-1 sauce','1 tablespoon Worcestershire sauce'],instructions:'Mix well and refrigerate. Add onion and garlic gradually to your taste. Serve with Ritz crackers.'},
+  {id:'r23',title:'Oatmeal Cake',attribution:'Family Classic',category:'Cakes',tags:['Oatmeal','Comfort','Broiled Icing'],meta:['Serves 12','45 Min','350°F'],ingredients:['1-1/2 cups boiling water','1 cup oats','1 cup brown sugar','1 cup white sugar','1/2 cup shortening','2 beaten eggs','1 tsp baking soda','1 tsp cinnamon','1/2 tsp salt','1-1/2 cups flour','1/2 cup chopped nuts (optional)'],instructions:'Pour boiling water over oats and let stand 10 minutes. Cream together brown sugar, white sugar and shortening. Add two beaten eggs and oat mixture. Fold in baking soda, cinnamon, salt and flour. Add nuts if desired. Mix well and pour into lightly greased 9x13 pan. Bake 35-40 minutes at 350 degrees. Broiled Icing: melt 1 cube margarine, add 1 cup brown sugar, 1 cup coconut, 1/4 cup cream, 1 tsp vanilla and 1 cup chopped nuts. Spread on cake and broil for 2 minutes.'},
+  {id:'r24',title:'Pineapple Carrot Cake',attribution:'Bonnie Jackson',category:'Cakes',tags:['Carrot','Pineapple','Cream Cheese'],meta:['Serves 15','1 Hr 15 Min','350°F'],ingredients:['3 cups flour','2 tsp soda, 2 tsp cinnamon','1 tsp salt, 1/2 tsp allspice, 1 tsp nutmeg','2 cups sugar','1-1/2 cups cooking oil','3 eggs','1 can crushed pineapple, undrained','2 cups grated carrots','1-1/2 cups chopped nuts'],instructions:'Blend sugar, oil and slightly beaten eggs. Add undrained pineapple and carrots and mix well. Add dry ingredients and nuts and mix well. Pour into greased and floured pans (3 round or 9x13). Bake 1 hour at 350 degrees. Cream Cheese Icing: blend 1 box powdered sugar with 1 (8oz) softened cream cheese, then add 1 tsp vanilla and chopped nuts if desired.'},
+  {id:'r25',title:'Sour Cream Coffee Cake',attribution:'Jean Powell',category:'Cakes',tags:['Coffee Cake','Cinnamon','Sour Cream'],meta:['Serves 12','55 Min','350°F'],ingredients:['1 cup butter or margarine','1-1/2 cups sugar','2 eggs, slightly beaten','1 cup sour cream (not low fat)','1 tsp vanilla','2 cups sifted flour','1 tsp baking powder','1/2 tsp baking soda','1/2 cup chopped nuts','2 tbls sugar + 1/2 tsp cinnamon for topping'],instructions:'Cream sugar and butter, add eggs, sour cream and vanilla. Blend in dry ingredients, mix well. Spoon half of batter into a greased angel food pan or 9x13 loaf pan. Sprinkle with half of cinnamon-sugar mixture and nuts, then remaining batter, rest of sugar mixture and nuts. Bake at 350 degrees 45-50 minutes or until pick comes out clean.'},
+  {id:'r26',title:'Swedish Cake',attribution:'Genia Middlemist',category:'Cakes',tags:['Pineapple','Easy','Summer'],meta:['Serves 12','40 Min','350°F'],ingredients:['2 eggs, slightly beaten','2 cups sugar','2 cups flour','2 tsp baking soda','1 tsp vanilla','1 can (20 oz) crushed pineapple, undrained','1/2 cup chopped nuts'],instructions:'Place all ingredients in a large bowl and stir until well mixed. Pour into ungreased 9x13 pan and bake 30-40 minutes at 350 degrees or until pick comes out clean. Icing: cream 1 package (8oz) cream cheese and 1/2 cup softened margarine until light and fluffy. Gradually add 1-3/4 cups powdered sugar, beating thoroughly. Add vanilla and nuts. Frost cake and sprinkle with a few nuts.'},
+  {id:'r27',title:'Wacky Cake',attribution:'No-Egg Wonder',category:'Cakes',tags:['Chocolate','Dairy-Free','Quick'],meta:['Serves 9','25 Min','350°F'],ingredients:['1 cup sugar','1-1/2 cups flour','3 tablespoons cocoa','1 tsp soda','6 tablespoons oil','1 cup water','1 tsp vanilla','1 tablespoon vinegar'],instructions:'Mix all dry ingredients then add liquids. Grease and flour a 9-inch square pan. Bake at 350 about 20 minutes or until pick inserted in middle comes out clean. For Bundt cake, double the recipe, grease and flour Bundt pan, bake about 30-35 minutes. Cool ten minutes on wire rack then invert on cake plate. When cool, sift powdered sugar on top.'},
+  {id:'r28',title:'Coffee Cake',attribution:'Genia Middlemist',category:'Cakes',tags:['Raisin','Cinnamon','Quick Bread'],meta:['Serves 10','25 Min','375°F'],ingredients:['1 cup sugar and 1/2 cup butter','1 egg, 4 tsp baking powder, 1/2 tsp salt','2/3 cup raisins, plumped in water','1 cup milk and 2-1/2 cups flour','Topping: 1/3 cup sugar + 1-1/2 tsp cinnamon','Option: sub 3/4 cup sour cream + 1/2 cup milk'],instructions:'Cream together 1 cup sugar and 1/2 cup butter. Add 1 egg, 4 tsp baking powder and 1/2 tsp salt. Simmer raisins in water until plumped, drain off water and dust with flour, then add to mixture. Add milk and flour. Spoon batter into greased baking pan. Sprinkle with cinnamon and sugar mixture. Bake 20 minutes at 375 degrees.'},
+  {id:'r29',title:'Chocolate Chip Cookies',attribution:'Maureen Eaton',category:'Cookies & Bars',tags:['Chocolate Chip','Classic','Drop Cookies'],meta:['Makes ~5 Dozen','10 Min','350°F'],ingredients:['1 cup butter and 1 cup Crisco','2 cups brown sugar and 1-1/2 cups white sugar','4 eggs and 1 tablespoon vanilla','2 tsp baking soda, 2 tsp salt','4 cups flour','2 cups chopped nuts','2 pkgs chocolate chips'],instructions:"Cream butter, Crisco and sugars. Add slightly beaten eggs and vanilla. Mix in dry ingredients, then nuts and chocolate chips. Drop by spoonfuls on prepared cookie sheets. Bake 8-10 minutes or until lightly browned at 350 degrees."},
+  {id:'r30',title:'Neiman-Marcus Cookies',attribution:'The Famous Recipe',category:'Cookies & Bars',tags:['Oatmeal','Chocolate Chip','Hershey Bar'],meta:['Makes 112!','10 Min','375°F'],ingredients:['2 cups butter, 4 cups flour, 2 tsp soda','2 cups sugar and 2 cups brown sugar','5 cups oatmeal blended to fine powder','24 oz chocolate chips, 1 tsp salt','1 8oz Hershey Bar, grated','4 eggs, 2 tsp baking powder, 2 tsp vanilla','3 cups chopped nuts, pecans preferred'],instructions:'Cream the butter and both sugars. Add eggs and vanilla. Mix together with flour, oatmeal, salt, baking powder and soda. Add chocolate chips, grated Hershey Bar and nuts. Roll into balls and place two inches apart on a cookie sheet. Bake for 10 minutes at 375 degrees. Makes 112 cookies.'},
+  {id:'r31',title:'No-Bake Cookies',attribution:'Quick & Easy',category:'Cookies & Bars',tags:['Oatmeal','Peanut Butter','No-Bake'],meta:['Makes ~3 Dozen','15 Min','Stovetop'],ingredients:['2 cups sugar','8 tablespoons butter or margarine','1/2 cup milk','1/4 cup unsweetened cocoa','1/2 cup peanut butter','1 tsp vanilla and a pinch of salt','3 cups quick-cooking oatmeal','1/2-1 cup chopped nuts','1/2-1 cup coconut'],instructions:'In large pan, combine sugar, butter, milk and cocoa. Heat stirring frequently until mixture comes to a boil. Boil one to two minutes. Remove from heat and cool one minute. Stir in peanut butter, vanilla and salt; mix well. Add oatmeal, nuts and coconut. Drop by spoon onto wax paper and let cool until hardened.'},
+  {id:'r32',title:'German Cream Cheese Brownies',attribution:'Rich & Marbled',category:'Cookies & Bars',tags:['Brownies','Cream Cheese','Chocolate'],meta:['Makes ~16','45 Min','350°F'],ingredients:['1 pkg German chocolate, 5 tablespoons butter','1 pkg (3oz) cream cheese','1 cup sugar and 3 eggs beaten','1/2 cup + 1 tablespoon flour','1-1/2 tsp vanilla, 1/2 tsp baking powder','1/4 tsp salt, 1/2 cup chopped nuts','1/4 tsp almond extract'],instructions:'Melt chocolate and 3 tablespoons butter, then cool. Cream 2 tablespoons butter and cream cheese. Add 1/4 cup sugar, 1 egg, 1 tablespoon flour and 1/2 tsp vanilla. Beat 2 eggs until thick, add 3/4 cup sugar, then baking powder, salt and 1/2 cup flour. Add cooled chocolate, nuts, almond extract and 1 tsp vanilla. Save 1 cup chocolate batter. Spread remaining in greased 9-inch pan, cover with cream cheese mixture, then rest of chocolate batter. Swirl to marble. Bake 40 minutes at 350 degrees.'},
+  {id:'r33',title:'Red Cross Fudge',attribution:'Mae Haynes',category:'Candy & Sweets',tags:['Fudge','Marshmallows','Chocolate'],meta:['Makes 5 lbs','25 Min','Stovetop'],ingredients:['4-1/2 cups sugar','1 large (13 oz) can evaporated milk','1/2 lb margarine','1 tablespoon vanilla','2 cups chopped nuts','2 cups miniature marshmallows','2 pkgs (6oz) or 1 pkg (12oz) chocolate chips'],instructions:'In large pan bring sugar, evaporated milk and margarine to a boil. Time exactly 11 minutes, constantly stirring. Have ready in a large bowl: 2 cups chopped nuts, 2 cups miniature marshmallows and chocolate chips. Add the cooked mixture and stir until chocolate and marshmallows dissolve and mixture is smooth. Pour into well-buttered pan. Cool at room temperature. Cut into squares and store in tight container.'},
+  {id:'r34',title:'Truffles',attribution:'Frances Chavez',category:'Candy & Sweets',tags:['Chocolate','Elegant','Gift'],meta:['Makes ~24','2 Hrs + Chill','Double Boiler'],ingredients:['1 pkg semi-sweet chocolate','3 regular Hershey bars or 1/3 large bar','Pinch of salt','1 can Eagle Brand milk','1 tsp vanilla or flavored liqueur','Chocolate sprinkles, coconut, or nuts for rolling'],instructions:'In double boiler, melt chocolate. Add pinch of salt and 1 can of Eagle Brand milk. Remove from heat and add 1 tsp vanilla. Beat until smooth. Let stand in refrigerator until thick enough to mold into small balls. Roll in chocolate sprinkles, coconut, nuts or chocolate powder. Keep in refrigerator or freezer.'},
+  {id:'r35',title:'Divinity',attribution:'Aunt Jane',category:'Candy & Sweets',tags:['Old-Fashioned','Egg White','Holiday'],meta:['Makes ~3 Dozen','45 Min','Candy Thermometer'],ingredients:['3 cups sugar','1/2 cup water','2/3 cup white corn syrup','3 egg whites','1 tsp vanilla','1 cup nuts (optional)'],instructions:'Cook sugar, water and syrup until it spins a thread when dropped by the spoon. Beat egg whites until very stiff peaks form. Slowly pour hot mixture into the egg whites as you beat the mixture. Beat until fluffy and begins to lose its glossy color. Add vanilla or desired flavoring and chopped nuts if you like. Drop by spoonfuls on waxed paper or pour into buttered dish. Store in tight container.'},
+  {id:'r36',title:'Biscuchitos',attribution:'New Mexico Christmas Cookie',category:'Candy & Sweets',tags:['Anise','Lard','Holiday','New Mexico'],meta:['Makes ~6 Dozen','12 Min','375°F'],ingredients:['2 cups (16 oz) lard','1-1/2 cups sugar','3 beaten eggs','2/3 cup whiskey','1/2 cup milk','2-3 tsp ground anise seed','2 tsp baking powder','Approximately 6 cups flour','Cinnamon and sugar for topping'],instructions:'Cream together lard and sugar. Add eggs, whiskey, milk and anise seed. Mix in baking powder, then blend in approximately 6 cups flour. Mix well, cover and let stand in refrigerator 2-3 hours. Roll out on floured board and cut in desired shapes. Bake 10-12 minutes or until golden brown at 375 degrees. Sprinkle with cinnamon and sugar.'},
+  {id:'r37',title:'Bourbon Balls',attribution:'Holiday Treat',category:'Candy & Sweets',tags:['Bourbon','No-Bake','Gift'],meta:['Makes ~3 Dozen','20 Min','No Bake'],ingredients:['1 cup powdered sugar','2-1/2 tablespoons cocoa','1-1/2 tablespoons light corn syrup','1/4 cup bourbon or rum','1 cup crushed vanilla wafers','1/2 cup chopped nuts'],instructions:'Mix all ingredients well. Roll into small balls and roll in powdered sugar, nuts or whatever you like. Store in tight container. These make wonderful holiday gifts.'},
+  {id:'r38',title:'Best Cobbler You Ever Ate',attribution:'Simple Perfection',category:'Pies & Desserts',tags:['Cobbler','Peaches','Summer'],meta:['Serves 8','50 Min','375°F'],ingredients:['1 cup flour','1 cup sugar','2 teaspoons baking powder','1/2 teaspoon salt','1 beaten egg','1 cube margarine, melted','Sliced fruit of choice, nectarines or peaches preferred'],instructions:'Cover bottom of 9x13 pan with sliced fruit of your choice. Mix all dry ingredients, then add beaten egg. Mix till crumbly. Sprinkle over fruit, then pour melted butter over top. Bake 45 minutes at 375 degrees.'},
+  {id:'r39',title:'Heavenly Pie',attribution:'Cherry Lemon Cloud',category:'Pies & Desserts',tags:['No-Bake','Cherry','Cream'],meta:['Serves 8','20 Min + Chill','No Bake'],ingredients:['1 can Eagle Brand milk, not low fat','1/3 cup lemon juice','1 can cherry pie filling','1 small carton whipping cream','Graham cracker crust','1/4 cup sugar and 1/2 tsp vanilla'],instructions:'Add lemon juice to Eagle Brand milk. Blend well with mixer or whisk. Pour into graham cracker crust. Spoon cherry filling over milk mixture. Whip cream till soft peaks form, add sugar and vanilla. Beat a little more. Spoon over top of pie filling. Sprinkle a few graham cracker crumbs and chopped nuts on top. Chill well before serving.'},
+  {id:'r40',title:'Pumpkin Pie',attribution:"Libby's Classic",category:'Pies & Desserts',tags:['Pumpkin','Thanksgiving','Spiced'],meta:['Serves 8','60 Min','425° then 350°F'],ingredients:['2 eggs, beaten','1 one-lb can of pumpkin','3/4 cup sugar','1/2 tsp salt','1 teaspoon cinnamon','1/2 tsp ginger','1/4 tsp cloves','1-2/3 cup evaporated milk (1 can)'],instructions:'Mix all ingredients well and pour into unbaked pie shell. Brush beaten egg yolk over pie shell before pouring in filling. Bake 15 min at 425 degrees, then lower temperature to 350 degrees and bake 45 min more or until knife inserted in center comes out clean.'},
+  {id:'r41',title:'Millionaire Pie',attribution:'Easy & Impressive',category:'Pies & Desserts',tags:['Pineapple','Lemon','Cool Whip'],meta:['Serves 8','10 Min + Chill','No Bake'],ingredients:['15 oz can crushed pineapple, well drained','1 can Eagle Brand milk','1/4 cup lemon juice','9 oz container Cool Whip','1 cup chopped pecans','Graham cracker crust'],instructions:'Beat milk and lemon juice. Add pineapple, Cool Whip and nuts. Pour in graham cracker crust. Sprinkle crumbs and nuts on top. Refrigerate until firm.'},
+  {id:'r42',title:'Brownie Pudding',attribution:'Upside-Down Magic',category:'Pies & Desserts',tags:['Brownie','Chocolate','Pudding Cake'],meta:['Serves 9','25 Min','350°F'],ingredients:['1 lb package brownie mix','1/2 cup chopped nuts','1 cup + 2 tablespoons brown sugar','1/4 cup + 1/8 cup cocoa','2-1/2 cups boiling water'],instructions:'Mix brownie mix for cake brownies and add 1/2 cup chopped nuts. Pour into greased pan. Mix together brown sugar and cocoa, sprinkle over batter, then pour 2-1/2 cups boiling water over top. Bake 20-25 minutes at 350 degrees. Cake will rise to top with sauce on bottom. Serve warm with cream or ice cream.'},
+  {id:'r43',title:'Beer Bread',attribution:'Three Ingredients',category:'Breads & Baked',tags:['Beer','Quick Bread','Easy'],meta:['Makes 1 Loaf','60 Min','350°F'],ingredients:['1/2 cup melted butter','3 cups self-rising flour','2 teaspoons sugar','1 (12oz) can beer'],instructions:'Melt butter, pour enough in 9x5 pan to coat bottom. In large bowl, mix rest of ingredients except butter. Spoon into pan and pour remaining butter over top. Bake 50-60 minutes at 350 degrees until golden brown. Cool 10 minutes.'},
+  {id:'r44',title:'Banana Bread',attribution:'One Pan Method',category:'Breads & Baked',tags:['Banana','Quick Bread','Breakfast'],meta:['Makes 1 Loaf','55 Min','350-375°F'],ingredients:['1/3 cup oil or applesauce','1/2 cup mashed ripe bananas, about 3','1/2 tsp vanilla','3 eggs, beaten','2 cups Bisquick','2/3 cup sugar','1/4 cup flour','1/2 cup chopped nuts'],instructions:'Generously grease bottom of 9x5x3 loaf pan. Stir all ingredients in pan with fork until moistened. Beat vigorously one minute. Bake until pick inserted in center comes out clean. Cool 5 min, run knife around sides to loosen. Remove and cool. Keeps better refrigerated in plastic bag.'},
+  {id:'r45',title:'Cinnamon Rolls',attribution:'Made in Bread Machine',category:'Breads & Baked',tags:['Bread Machine','Cinnamon','Breakfast'],meta:['Makes ~12','1.5 Hrs + Bake','350°F'],ingredients:['3/8 cup milk and 3/8 cup water','1 egg beaten, 3 cups flour, 1 tsp salt','4 tablespoons butter, 1/3 cup sugar, 1-1/2 tsp yeast','Filling: 2 tablespoons sugar, 1 tablespoon cinnamon','2 tablespoons brown sugar, 1/2 cup raisins','Base: 5 tablespoons butter + 1/2 cup brown sugar'],instructions:'Put all dough ingredients in bread machine on dough cycle, mix and let rise 45 minutes. Melt 5 tablespoons butter in bottom of 9x13 pan, sprinkle 1/2 cup brown sugar. Roll out dough in rectangle about 9x17. Spread 1 tablespoon melted butter on dough. Make filling and spread on dough. Roll up lengthwise and cut in 1/2-inch rolls with string. Put in pan, let rise in warm place. Bake 25 minutes at 350 degrees till golden brown.'},
+  {id:'r46',title:'Sopapillas',attribution:'New Mexico Tradition',category:'Breads & Baked',tags:['Fried','New Mexico','Dessert Bread'],meta:['Serves 6-8','20 Min','Deep Fry'],ingredients:['1 cup flour','1 tsp baking powder','Pinch of salt','1 tablespoon shortening','Milk to moisten dough'],instructions:'Mix well, roll out thin, cut in triangles and fry in hot grease. Drain on paper towels. Enjoy with honey!'},
+  {id:'r47',title:'Tortillas',attribution:'Homemade Flour',category:'Breads & Baked',tags:['Flour Tortillas','Homemade','Southwest'],meta:['Makes ~12','30 Min','Griddle'],ingredients:['4 cups flour','1 tsp baking powder','1/2 tsp salt','1 tablespoon lard or Crisco','Enough water to make dough'],instructions:'Mix dry ingredients. Cut in lard until crumbly. Add enough water to make a soft, workable dough. Knead briefly. Pinch off balls and roll to desired thickness. Brown on heavy skillet or griddle, turning once.'},
+  {id:'r48',title:'Russian Tea',attribution:'Warm Spiced Drink',category:'Beverages',tags:['Hot Drink','Spiced','Tang'],meta:['Makes 1 Large Jar','5 Min','Mix & Store'],ingredients:['2 cups Tang or equivalent','2 cups sugar','1 scoop lemonade mix','1/2 cup instant tea','1 teaspoon cinnamon','1 teaspoon ground cloves'],instructions:'Mix in blender. Store in tight container. Use 2-3 tablespoons in a cup of hot water.'},
+  {id:'r49',title:'Raspberry Crush',attribution:'Party Punch',category:'Beverages',tags:['Punch','Raspberry','Party'],meta:['Serves 12','5 Min','No Cook'],ingredients:['1 pkg raspberry Kool-Aid','1 cup sugar','4 cups water','1 (6oz) can thawed lemonade','1 (10oz) pkg frozen raspberries, thawed','3-1/2 cups 7-Up'],instructions:'Combine all ingredients except 7-Up. Add that just before serving. Delicious!'},
+  {id:'r50',title:'Hot Fruit Punch',attribution:'Holiday Favorite',category:'Beverages',tags:['Hot Punch','Cinnamon','Holiday'],meta:['Serves 20+','20 Min','Stovetop'],ingredients:['22 cups water','3-1/2 cups sugar','3 sticks cinnamon','20 whole cloves','2 small cans frozen orange juice','1 can lemonade','1 large can pineapple juice'],instructions:'Put all ingredients in a large saucepan and simmer. Serve warm. Also good served cold. Cut recipe in half for most occasions.'},
+];
+
+// ── STATE ─────────────────────────────────────────────────────────────────────
+let recipes = [...INITIAL_RECIPES];
+let currentView = 'home'; // 'home' | 'category' | 'recipe' | 'search'
+let currentId = null;
+let currentCat = null;
+
+// Load from localStorage
+try {
+  const saved = localStorage.getItem('mist_recipes');
+  if (saved) recipes = JSON.parse(saved);
+} catch(e) {}
+
+function saveRecipes() {
+  try { localStorage.setItem('mist_recipes', JSON.stringify(recipes)); } catch(e) {}
+}
+
+function uid() {
+  return 'r' + Date.now() + Math.random().toString(36).slice(2,6);
+}
+
+// ── BUILD SIDEBAR ─────────────────────────────────────────────────────────────
+function buildSidebar() {
+  const nav = document.getElementById('sidebarNav');
+  nav.innerHTML = '';
+  const q = document.getElementById('searchInput').value.toLowerCase().trim();
+
+  if (q) {
+    // Flat search results in nav
+    const matches = recipes.filter(r =>
+      r.title.toLowerCase().includes(q) ||
+      r.category.toLowerCase().includes(q) ||
+      (r.attribution||'').toLowerCase().includes(q) ||
+      r.ingredients.some(i => i.toLowerCase().includes(q))
+    );
+    const g = document.createElement('div');
+    g.className = 'cat-group';
+    const hdr = document.createElement('div');
+    hdr.className = 'cat-header';
+    hdr.innerHTML = `<span>${matches.length} result${matches.length!==1?'s':''}</span>`;
+    g.appendChild(hdr);
+    const items = document.createElement('div');
+    items.className = 'cat-items';
+    matches.forEach(r => {
+      const el = document.createElement('div');
+      el.className = 'nav-item' + (currentId === r.id ? ' active' : '');
+      el.textContent = r.title;
+      el.title = r.title;
+      el.onclick = () => showRecipe(r.id);
+      items.appendChild(el);
+    });
+    if (!matches.length) {
+      const e = document.createElement('div');
+      e.style.cssText = 'padding:8px 14px;font-size:11px;font-weight:300;color:#7a98aa;';
+      e.textContent = 'No results';
+      items.appendChild(e);
+    }
+    g.appendChild(items);
+    nav.appendChild(g);
+    return;
+  }
+
+  CAT_ORDER.forEach(cat => {
+    const catRecipes = recipes.filter(r => r.category === cat);
+    if (!catRecipes.length) return;
+    const g = document.createElement('div');
+    g.className = 'cat-group';
+    const hdr = document.createElement('div');
+    hdr.className = 'cat-header';
+    hdr.innerHTML = `<span>${cat}</span><span class="cat-count">${catRecipes.length}</span>`;
+    hdr.onclick = () => showCategory(cat);
+    g.appendChild(hdr);
+    const items = document.createElement('div');
+    items.className = 'cat-items';
+    catRecipes.forEach(r => {
+      const el = document.createElement('div');
+      el.className = 'nav-item' + (currentId === r.id ? ' active' : '');
+      el.textContent = r.title;
+      el.title = r.title;
+      el.onclick = () => showRecipe(r.id);
+      items.appendChild(el);
+    });
+    g.appendChild(items);
+    nav.appendChild(g);
+  });
+}
+
+// ── RENDER CONTENT ────────────────────────────────────────────────────────────
+function setTopbar(title, meta=[], actions=[]) {
+  document.getElementById('topbarTitle').textContent = title;
+  const metaEl = document.getElementById('topbarMeta');
+  metaEl.innerHTML = meta.map(m => `<span class="meta-chip">${esc(m)}</span>`).join('');
+  document.getElementById('topbarActions').innerHTML = actions.join('');
+}
+
+function showHome() {
+  currentView = 'home'; currentId = null; currentCat = null;
+  buildSidebar();
+  const total = recipes.length;
+  const cats = [...new Set(recipes.map(r => r.category))].length;
+  setTopbar('The Mist Family Cookbook');
+  document.getElementById('content').innerHTML = `
+    <div class="welcome">
+      <div class="welcome-icon">
+        <svg width="36" height="36" viewBox="0 0 36 36" fill="none" stroke="#5b8faa" stroke-width="1.5">
+          <path d="M18 4 C10 4 4 10 4 18 C4 26 10 32 18 32 C26 32 32 26 32 18 C32 10 26 4 18 4Z"/>
+          <path d="M12 18 L18 12 L24 18"/>
+          <line x1="18" y1="12" x2="18" y2="26"/>
+          <line x1="8" y1="22" x2="28" y2="22"/>
+        </svg>
+      </div>
+      <h2>The Mist Family Cookbook</h2>
+      <p>A living collection of cherished recipes, passed down with love. Browse by category in the sidebar, search for a dish, or add your own recipe to the collection.</p>
+      <div class="stats">
+        <div class="stat-card"><div class="stat-num">${total}</div><div class="stat-lbl">Recipes</div></div>
+        <div class="stat-card"><div class="stat-num">${cats}</div><div class="stat-lbl">Categories</div></div>
+        <div class="stat-card"><div class="stat-num">${recipes.filter(r=>!INITIAL_RECIPES.find(ir=>ir.id===r.id)).length}</div><div class="stat-lbl">Added by you</div></div>
+      </div>
+    </div>`;
+}
+
+function showCategory(cat) {
+  currentView = 'category'; currentCat = cat; currentId = null;
+  buildSidebar();
+  const catRecipes = recipes.filter(r => r.category === cat);
+  setTopbar(cat, [`${catRecipes.length} recipes`]);
+  document.getElementById('content').innerHTML = `
+    <div class="cat-page-header">
+      <div class="cat-page-title">${esc(cat)}</div>
+      <div class="cat-page-count">${catRecipes.length} recipes</div>
+    </div>
+    <div class="recipe-grid">
+      ${catRecipes.map(r => `
+        <div class="recipe-card" onclick="showRecipe('${r.id}')">
+          <div class="card-cat">${esc(r.category)}</div>
+          <div class="card-title">${esc(r.title)}</div>
+          ${r.attribution ? `<div class="card-attr">— ${esc(r.attribution)}</div>` : ''}
+          <div class="card-meta">
+            ${(r.meta||[]).map(m=>`<span class="card-tag">${esc(m)}</span>`).join('')}
+            ${(r.tags||[]).slice(0,3).map(t=>`<span class="card-tag">${esc(t)}</span>`).join('')}
+          </div>
+        </div>`).join('')}
+    </div>`;
+}
+
+function showRecipe(id) {
+  const r = recipes.find(x => x.id === id);
+  if (!r) return;
+  currentView = 'recipe'; currentId = id; currentCat = null;
+  closeSidebar();
+  buildSidebar();
+
+  setTopbar(r.title, [r.category], [
+    `<button class="icon-btn" title="Edit recipe" onclick="openEdit('${id}')">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+        <path d="M10 2 L12 4 L5 11 L2 12 L3 9 Z"/>
+        <line x1="8.5" y1="3.5" x2="10.5" y2="5.5"/>
+      </svg>
+    </button>`,
+    `<button class="icon-btn danger" title="Delete recipe" onclick="deleteRecipe('${id}')">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+        <line x1="2" y1="3" x2="12" y2="3"/><line x1="5" y1="3" x2="5" y2="1"/><line x1="9" y1="3" x2="9" y2="1"/>
+        <rect x="3" y="3" width="8" height="9" rx="1"/>
+        <line x1="5.5" y1="6" x2="5.5" y2="10"/><line x1="8.5" y1="6" x2="8.5" y2="10"/>
+      </svg>
+    </button>`
+  ]);
+
+  document.getElementById('content').innerHTML = `
+    <div class="recipe-view">
+      <div class="recipe-hero">
+        <div class="recipe-category">${esc(r.category)}</div>
+        <div class="recipe-title">${esc(r.title)}</div>
+        ${r.attribution ? `<div class="recipe-attribution">— ${esc(r.attribution)}</div>` : ''}
+        <div class="recipe-meta">
+          ${(r.meta||[]).map(m=>`<div class="recipe-meta-chip">
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="#5b8faa" stroke-width="1.3"><circle cx="5" cy="5" r="4"/><line x1="5" y1="2.5" x2="5" y2="5"/><line x1="5" y1="5" x2="7" y2="6.5"/></svg>
+            ${esc(m)}</div>`).join('')}
+        </div>
+        <div class="recipe-tags">${(r.tags||[]).map(t=>`<span class="tag">${esc(t)}</span>`).join('')}</div>
+      </div>
+      <div class="recipe-body">
+        <div class="recipe-ingredients">
+          <div class="section-label">Ingredients</div>
+          <ul class="ing-list">
+            ${(r.ingredients||[]).map(i=>`<li><span class="ing-bullet"></span><span>${esc(i)}</span></li>`).join('')}
+          </ul>
+        </div>
+        <div class="recipe-directions">
+          <div class="section-label">Directions</div>
+          <p class="directions-text">${esc(r.instructions)}</p>
+        </div>
+      </div>
+    </div>`;
+}
+
+// ── MODAL ─────────────────────────────────────────────────────────────────────
+function openAdd() {
+  document.getElementById('editId').value = '';
+  document.getElementById('modalTitle').textContent = 'Add recipe';
+  document.getElementById('fTitle').value = '';
+  document.getElementById('fAttribution').value = '';
+  document.getElementById('fServes').value = '';
+  document.getElementById('fTime').value = '';
+  document.getElementById('fTemp').value = '';
+  document.getElementById('fTags').value = '';
+  document.getElementById('fDirections').value = '';
+  populateCategorySelect();
+  buildIngList([]);
+  document.getElementById('modalOverlay').classList.add('open');
+  document.getElementById('fTitle').focus();
+}
+
+function openEdit(id) {
+  const r = recipes.find(x => x.id === id);
+  if (!r) return;
+  document.getElementById('editId').value = id;
+  document.getElementById('modalTitle').textContent = 'Edit recipe';
+  document.getElementById('fTitle').value = r.title;
+  document.getElementById('fAttribution').value = r.attribution || '';
+  document.getElementById('fServes').value = (r.meta||[])[0] || '';
+  document.getElementById('fTime').value = (r.meta||[])[1] || '';
+  document.getElementById('fTemp').value = (r.meta||[])[2] || '';
+  document.getElementById('fTags').value = (r.tags||[]).join(', ');
+  document.getElementById('fDirections').value = r.instructions || '';
+  populateCategorySelect(r.category);
+  buildIngList(r.ingredients||[]);
+  document.getElementById('modalOverlay').classList.add('open');
+  document.getElementById('fTitle').focus();
+}
+
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('open');
+}
+
+function populateCategorySelect(selected) {
+  const sel = document.getElementById('fCategory');
+  // All categories plus any new ones in data
+  const allCats = [...new Set([...CAT_ORDER, ...recipes.map(r=>r.category)])];
+  sel.innerHTML = allCats.map(c =>
+    `<option value="${esc(c)}" ${c === selected ? 'selected' : ''}>${esc(c)}</option>`
+  ).join('');
+}
+
+function buildIngList(items) {
+  const list = document.getElementById('ingList');
+  list.innerHTML = '';
+  (items.length ? items : ['']).forEach(v => addIngRow(v));
+}
+
+function addIngRow(val='') {
+  const list = document.getElementById('ingList');
+  const row = document.createElement('div');
+  row.className = 'dyn-item';
+  row.innerHTML = `<input type="text" value="${esc(val)}" placeholder="e.g. 2 cups flour">
+    <button class="dyn-remove" onclick="this.parentElement.remove()" title="Remove">✕</button>`;
+  list.appendChild(row);
+  row.querySelector('input').focus();
+}
+
+function saveRecipe() {
+  const id = document.getElementById('editId').value;
+  const title = document.getElementById('fTitle').value.trim();
+  if (!title) { document.getElementById('fTitle').style.borderColor='#dc2626'; document.getElementById('fTitle').focus(); return; }
+  document.getElementById('fTitle').style.borderColor='';
+
+  const ingredients = [...document.querySelectorAll('#ingList .dyn-item input')]
+    .map(i => i.value.trim()).filter(Boolean);
+  const meta = [
+    document.getElementById('fServes').value.trim(),
+    document.getElementById('fTime').value.trim(),
+    document.getElementById('fTemp').value.trim()
+  ].filter(Boolean);
+  const tags = document.getElementById('fTags').value.split(',').map(t=>t.trim()).filter(Boolean);
+
+  const data = {
+    id: id || uid(),
+    title,
+    attribution: document.getElementById('fAttribution').value.trim(),
+    category: document.getElementById('fCategory').value,
+    meta, tags, ingredients,
+    instructions: document.getElementById('fDirections').value.trim()
+  };
+
+  if (id) {
+    const idx = recipes.findIndex(r => r.id === id);
+    if (idx >= 0) recipes[idx] = data;
+  } else {
+    recipes.push(data);
+  }
+
+  saveRecipes();
+  closeModal();
+  showRecipe(data.id);
+  showToast(id ? 'Recipe updated!' : 'Recipe added!');
+}
+
+function deleteRecipe(id) {
+  const r = recipes.find(x => x.id === id);
+  if (!r) return;
+  if (!confirm(`Delete "${r.title}"? This cannot be undone.`)) return;
+  recipes = recipes.filter(x => x.id !== id);
+  saveRecipes();
+  showToast('Recipe deleted');
+  showHome();
+}
+
+// ── SEARCH ────────────────────────────────────────────────────────────────────
+let searchTimer;
+document.getElementById('searchInput').addEventListener('input', function() {
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(() => {
+    buildSidebar();
+    const q = this.value.toLowerCase().trim();
+    if (!q) { showHome(); return; }
+    currentView = 'search'; currentId = null; currentCat = null;
+    const matches = recipes.filter(r =>
+      r.title.toLowerCase().includes(q) ||
+      r.category.toLowerCase().includes(q) ||
+      (r.attribution||'').toLowerCase().includes(q) ||
+      r.ingredients.some(i => i.toLowerCase().includes(q)) ||
+      r.instructions.toLowerCase().includes(q)
+    );
+    setTopbar(`Search: "${this.value}"`, [`${matches.length} results`]);
+    document.getElementById('content').innerHTML = matches.length
+      ? `<div class="search-results">${matches.map(r=>`
+          <div class="search-result" onclick="showRecipe('${r.id}')">
+            <div style="flex:0 0 auto">
+              <div class="sr-cat">${esc(r.category)}</div>
+              <div class="sr-title">${esc(r.title)}</div>
+              ${r.attribution?`<div class="sr-attr">— ${esc(r.attribution)}</div>`:''}
+            </div>
+            <div style="flex:1;display:flex;flex-wrap:wrap;gap:4px;justify-content:flex-end;align-items:center">
+              ${(r.meta||[]).map(m=>`<span class="card-tag">${esc(m)}</span>`).join('')}
+            </div>
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="#b0ccd8" stroke-width="1.5"><polyline points="5,2 10,7 5,12"/></svg>
+          </div>`).join('')}
+        </div>`
+      : `<div class="empty-state">No recipes found for "${esc(this.value)}"</div>`;
+  }, 200);
+});
+
+// ── TOAST ─────────────────────────────────────────────────────────────────────
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+// ── MOBILE ────────────────────────────────────────────────────────────────────
+document.getElementById('hamburger').onclick = () => {
+  document.getElementById('sidebar').classList.toggle('open');
+};
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+}
+
+// ── WIRE UP ───────────────────────────────────────────────────────────────────
+document.getElementById('addBtn').onclick = openAdd;
+document.getElementById('modalClose').onclick = closeModal;
+document.getElementById('btnCancel').onclick = closeModal;
+document.getElementById('btnSave').onclick = saveRecipe;
+document.getElementById('ingAdd').onclick = () => addIngRow();
+document.getElementById('modalOverlay').onclick = (e) => {
+  if (e.target === document.getElementById('modalOverlay')) closeModal();
+};
+
+// ── UTILS ─────────────────────────────────────────────────────────────────────
+function esc(s) {
+  return String(s)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+buildSidebar();
+showHome();
+</script>
+</body>
+</html>
